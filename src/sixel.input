@@ -1,0 +1,53 @@
+)set mess type off    
+
+-- Add the following lines to ~/.gnuplot if background is black.
+-- set term sixel
+-- set border lt 4
+-- set linetype 8 lc "white"
+-- set key tc rgb 'white'
+
+EF ==> Expression Float
+SBF ==> SegmentBinding Float
+DROP ==> DrawOption
+DROP0 ==> DrawOptionFunctions0
+STR ==> String
+LDF ==> List DoubleFloat
+
+-- Parameters (free to change at runtime)
+__s:="system fricas2sixel -bg ~A -D ~A -fg ~A '~A'" 
+__bg:="Black" 
+__fg:="Orange" 
+__D:="150" 
+
+__gpl:="sixel31415926.gpl"
+__gps:="system gnuplot -e _"set term sixel;load '~A'_""      
+
+sixel(x:TexFormat):Void ==
+  cmd:=string(FORMAT('NIL,__s,__bg,__D,__fg,tex(x).1)$Lisp)
+  systemCommand(cmd)
+
+++ \spad{sixDraw} provides 2d plotting with options
+sixDraw(f:EF,segbind:SBF,opts:List DROP):Void ==
+  cmd:=string(FORMAT('NIL,__gps,__gpl)$Lisp)
+  gnuDraw(f,segbind,__gpl,opts)
+  systemCommand(cmd)
+
+++ \spad{sixDraw} provides 2d plotting from list of values with options
+sixDraw(l1:LDF,l2:LDF,opts:List DROP):Void ==
+  cmd:=string(FORMAT('NIL,__gps,__gpl)$Lisp)
+  gnuDraw(l1,l2,__gpl,opts)
+  systemCommand(cmd)
+
+
+++ \spad{gnuDraw} provides 3d surface plotting with options
+sixDraw(f:EF,sb1:SBF,sb2:SBF,opts:List DROP):Void ==
+  cmd:=string(FORMAT('NIL,__gps,__gpl)$Lisp)
+  gnuDraw(f,sb1,sb2,__gpl,opts)
+  systemCommand(cmd)
+
+
+)set mess type on
+
+-- sixDraw(sin(2*x)*x,x=0.0..%pi,[])
+-- sixDraw([i for i in 1..20],[sqrt(i) for i in 1..20],[])
+-- sixDraw(sin(x*y),x=-1.0..1.0,y=-1.0..1.0,[])

@@ -1,0 +1,8 @@
+The bash scripts latex2sixel & fricas2sixel only differ insofar as the
+latter has some macro definitions which make FriCAS TeX output compatible
+to LaTeX.
+
+Copy fircas2sixel to a directory in $PATH and do a "chmod +x" if the script
+is not already executable.
+
+---
