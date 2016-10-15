@@ -75,6 +75,7 @@ DrawFrontend():
       f1:TextFile:=open(filename::FileName,"output")
       writeLine!(f1,concat(["set title _"",title(opts,"")$DROP0,"_""]))
       writeLine!(f1,"splot '-' title '' with pm3d")
+      -- TODO :: with lines -> 
       p2 := mesh(s)
       for p1 in p2 repeat
         for p in p1 repeat

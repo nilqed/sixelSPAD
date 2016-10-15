@@ -5,6 +5,7 @@
 )co view2D+
 )co view3D+
 
+
 -- Setting/getting frontends
 
 getFrontend2D()
@@ -59,8 +60,8 @@ draw(curve(sin(5*t),t),t=0..2*%pi, coordinates == polar)
                                       
 draw(cos(x*y),x=-3..3,y=-3..3)
 
-f(x,y) == sin(x)*cos(y) 
-draw(f,-%pi..%pi,-%pi..%pi) 
+h(x,y) == sin(x)*cos(y) 
+draw(h,-%pi..%pi,-%pi..%pi) 
 
 draw(surface(u*cos(v), u*sin(v), v*cos(u)), u=-4..4, v=0..%pi, coordinates== parabolicCylindrical)
  
