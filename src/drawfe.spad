@@ -1,0 +1,87 @@
+)abbrev package DRAWFE DrawFrontend
+++ Author: Kurt Pagani <nilqed@gmail.com>
+++ Date Created: 13 October 2016
+++ Basic Operations: 
+DrawFrontend():
+ Exports == Implementation where 
+  EF    ==> Expression Float
+  STR   ==> String
+  G     ==> GraphImage
+  DROP  ==> DrawOption
+  DROP0 ==> DrawOptionFunctions0
+  
+  SPACE3 ==> ThreeSpace(DoubleFloat)
+  
+
+  Exports ==> with
+  
+    createDraw2D : (G, List DROP, List STR) -> Void
+    createDraw3D : (SPACE3, List DROP, List STR) -> Void
+    writeGnuplot2D : (G, List DROP, List STR) -> Void
+    writeGnuplot3D : (SPACE3, List DROP, List STR) -> Void
+    writeGLE2D : (G, List DROP, List STR) -> Void
+    writeGLE3D : (SPACE3, List DROP, List STR) -> Void
+    
+  Implementation ==> add
+  
+    import from TwoDimensionalViewport
+    import from ThreeDimensionalViewport
+    import from TopLevelDrawFunctions
+    import from GraphImage
+    import from SPACE3
+    import from EF
+
+    gpl:="system gnuplot -e _"set term sixel;load '~A'_""   
+
+    createDraw2D(g1:G,opts:List DROP,fe:List STR):Void ==
+      fetype:STR:=fe.1
+      feoutp:STR:=fe.2
+      output("Frontend ......: " fetype)$OutputPackage
+      output("Output ........: " feoutp)$OutputPackage
+      fetype = "gnuplot"  => writeGnuplot2D(g1,opts,fe)
+      fetype = "gle"      => writeGLE2D(g1,opts,fe)
+      void()
+
+    createDraw3D(s1:SPACE3,opts:List DROP,fe:List STR):Void ==
+      fetype:STR:=fe.1
+      feoutp:STR:=fe.2
+      output("Frontend ......: " fetype)$OutputPackage
+      output("Output ........: " feoutp)$OutputPackage
+      fetype = "gnuplot"  => writeGnuplot3D(s1,opts,fe)
+      fetype = "gle"      => writeGLE3D(s1,opts,fe)
+      void()
+
+
+    writeGnuplot2D(g : G, opts : List DROP, fe:List STR):Void ==
+      filename:String:=fe.2
+      f1:TextFile:=open(filename::FileName,"output")
+      writeLine!(f1,concat(["set title _"",title(opts,"")$DROP0,"_""]))
+      writeLine!(f1,"plot '-' title '' lw 2 with lines")
+      p2 := pointLists(g)
+      for p1 in p2 repeat
+        for p in p1 repeat
+          writeLine!(f1,concat([unparse(convert(p.1)@InputForm)," ",
+                              unparse(convert(p.2)@InputForm)]))
+        writeLine!(f1); -- blank line need to mark a "branch"
+      close! f1
+      --output(filename)$OutputPackage
+      cmd:=string(FORMAT('NIL,gpl,filename)$Lisp)
+      systemCommand(cmd)$MoreSystemCommands
+      --void()
+      
+    
+    writeGnuplot3D(s : SPACE3, opts : List DROP, fe:List STR):Void ==
+      filename:String:=fe.2
+      f1:TextFile:=open(filename::FileName,"output")
+      writeLine!(f1,concat(["set title _"",title(opts,"")$DROP0,"_""]))
+      writeLine!(f1,"splot '-' title '' with pm3d")
+      p2 := mesh(s)
+      for p1 in p2 repeat
+        for p in p1 repeat
+          writeLine!(f1,concat([unparse(convert(p.1)@InputForm)," ",
+                                unparse(convert(p.2)@InputForm)," ",
+                                unparse(convert(p.3)@InputForm)]))
+        writeLine!(f1); -- blank line need to mark a "branch"
+      close! f1      
+      cmd:=string(FORMAT('NIL,gpl,filename)$Lisp)
+      systemCommand(cmd)$MoreSystemCommands
