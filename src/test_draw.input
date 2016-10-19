@@ -75,11 +75,29 @@ draw(surface(n1,n2,n3), 1..4, 1..2*%pi, coordinates == toroidal(1$DFLOAT))
 -- 7.2.4 Three-Dimensional Options
 draw(cos(x*y),x=0..2*%pi,y=0..%pi,title == "Title of Graph") 
 
-draw(cos(x*y),x=-3..3,y=-3..3, style=="smooth", title=="Smooth Option") 
+draw(cos(x*y),x=-3..3,y=-3..3, style=="smooth", title=="Smooth Option")
+draw(cos(x*y),x=-3..3,y=-3..3, style=="with pm3d", title=="pm3d option")
+draw(cos(x*y),x=-3..3,y=-3..3, title=="default Option")
 
 m(u:DFLOAT,v:DFLOAT):DFLOAT == 1 
 draw(m, 0..2*%pi,0..%pi, coordinates == spherical, style=="shade") 
+draw(m, 0..2*%pi,0..%pi, coordinates == spherical, style=="")
+draw(m, 0..2*%pi,0..%pi, coordinates == spherical) 
 
 -- 7.2.2 Plotting Three-Dimensional Parametric Space Curves
--- todo (not a mash)
--- draw(curve(5*cos(t), 5*sin(t),t), t=-12..12) 
+draw(curve(5*cos(t), 5*sin(t),t), t=-12..12) 
+
+
+
+-- Options 2D
+draw(x^2*sin(x),x=-2..2,style=="lc 'blue' lw 1 with lines")
+draw(besselJ(5,x),x=-2..2,style=="lc 'green' lw 1 with lines")
+draw(besselI(2,x),x=-2..2,title=="Bessel I",style=="lc 'magenta' lw 1 with lines")
+draw(besselI(2,x),x=-2..2,style=="lc 'white' lw 1 with points")
+
+-- Graph
+v:=draw(x,x=0..1)
+gr:=getGraph(v,1)
+--pl:=pointLists gr
+
+
