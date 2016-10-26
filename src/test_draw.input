@@ -109,3 +109,23 @@ gr:=getGraph(v,1)
 --pl:=pointLists gr
 
 
+fe3D.'display:="postscript; set output 'test.ps'"
+setFrontend3D(fe3D)
+draw(surface(n1,n2,n3), 1..4, 1..2*%pi, coordinates == toroidal(1$DFLOAT)) 
+
+fe3D.'display:="postscript; set output 'test2.ps'"
+setFrontend3D(fe3D)
+draw(m, 0..2*%pi,0..%pi, coordinates == spherical) 
+
+fe3D.'display:="svg background 'black'; set output 'test.svg'"
+setFrontend3D(fe3D)
+draw(curve(5*cos(t), 5*sin(t),t), t=-12..12) 
+
+fe3D.'display:="svg background 'blue'; set output 'test2.svg'"
+setFrontend3D(fe3D)
+draw(m, 0..2*%pi,0..%pi, coordinates == spherical) 
+
+
+
+
+

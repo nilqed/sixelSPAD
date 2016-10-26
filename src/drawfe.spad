@@ -33,7 +33,7 @@ DrawFrontend():
     import from SPACE3
     import from EF
 
-    gpl:="system gnuplot -e _"set term sixel;load '~A'_""   
+    gpl:="system gnuplot -e _"set term ~A;load '~A'_""   
 
     createDraw2D(g1:G,opts:List DROP,fe:FET):Void ==
       fetype:STR:=fe.'type
@@ -41,6 +41,7 @@ DrawFrontend():
       fedisp:STR:=fe.'display
       output("Frontend ......: " fetype)$OutputPackage
       output("Output ........: " feoutp)$OutputPackage
+      output("Display .......: " fedisp)$OutputPackage
       fetype = "gnuplot"  => writeGnuplot2D(g1,opts,fe)
       fetype = "gle"      => writeGLE2D(g1,opts,fe)
       void()
@@ -51,6 +52,7 @@ DrawFrontend():
       fedisp:STR:=fe.'display
       output("Frontend ......: " fetype)$OutputPackage
       output("Output ........: " feoutp)$OutputPackage
+      output("Display .......: " fedisp)$OutputPackage
       fetype = "gnuplot"  => writeGnuplot3D(s1,opts,fe)
       fetype = "gle"      => writeGLE3D(s1,opts,fe)
       void()
@@ -58,6 +60,7 @@ DrawFrontend():
 
     writeGnuplot2D(g : G, opts : List DROP, fe:FET):Void ==
       filename:String:=fe.'output
+      display:String:=fe.'display
       f1:TextFile:=open(filename::FileName,"output")
       title:=title(opts,"")$DROP0
       style:=style(opts,"lc 'magenta' lw 2 with lines")$DROP0
@@ -71,13 +74,14 @@ DrawFrontend():
                               unparse(convert(p.2)@InputForm)]))
         writeLine!(f1)
       close! f1
-      cmd:=string(FORMAT('NIL,gpl,filename)$Lisp)
+      cmd:=string(FORMAT('NIL,gpl,display,filename)$Lisp)
       systemCommand(cmd)$MoreSystemCommands
       
       
     
     writeGnuplot3D(s : SPACE3, opts : List DROP, fe:FET):Void ==
       filename:String:=fe.'output
+      display:String:=fe.'display
       f1:TextFile:=open(filename::FileName,"output")
       title:=title(opts,"")$DROP0 
       style:=style(opts,"lc 'magenta' lw 1 with lines")$DROP0  
@@ -101,5 +105,5 @@ DrawFrontend():
                                 unparse(convert(p.3)@InputForm)]))
         writeLine!(f1)
       close! f1      
-      cmd:=string(FORMAT('NIL,gpl,filename)$Lisp)
+      cmd:=string(FORMAT('NIL,gpl,display,filename)$Lisp)
       systemCommand(cmd)$MoreSystemCommands
