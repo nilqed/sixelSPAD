@@ -6,6 +6,7 @@ DrawFrontend():
  Exports == Implementation where 
   EF    ==> Expression Float
   STR   ==> String
+  FET   ==> Table(Symbol,String) 
   G     ==> GraphImage
   DROP  ==> DrawOption
   DROP0 ==> DrawOptionFunctions0
@@ -16,12 +17,12 @@ DrawFrontend():
 
   Exports ==> with
   
-    createDraw2D : (G, List DROP, List STR) -> Void
-    createDraw3D : (SPACE3, List DROP, List STR) -> Void
-    writeGnuplot2D : (G, List DROP, List STR) -> Void
-    writeGnuplot3D : (SPACE3, List DROP, List STR) -> Void
-    writeGLE2D : (G, List DROP, List STR) -> Void
-    writeGLE3D : (SPACE3, List DROP, List STR) -> Void
+    createDraw2D : (G, List DROP, FET) -> Void
+    createDraw3D : (SPACE3, List DROP, FET) -> Void
+    writeGnuplot2D : (G, List DROP, FET) -> Void
+    writeGnuplot3D : (SPACE3, List DROP, FET) -> Void
+    writeGLE2D : (G, List DROP, FET) -> Void
+    writeGLE3D : (SPACE3, List DROP, FET) -> Void
     
   Implementation ==> add
   
@@ -34,18 +35,20 @@ DrawFrontend():
 
     gpl:="system gnuplot -e _"set term sixel;load '~A'_""   
 
-    createDraw2D(g1:G,opts:List DROP,fe:List STR):Void ==
-      fetype:STR:=fe.1
-      feoutp:STR:=fe.2
+    createDraw2D(g1:G,opts:List DROP,fe:FET):Void ==
+      fetype:STR:=fe.'type
+      feoutp:STR:=fe.'output
+      fedisp:STR:=fe.'display
       output("Frontend ......: " fetype)$OutputPackage
       output("Output ........: " feoutp)$OutputPackage
       fetype = "gnuplot"  => writeGnuplot2D(g1,opts,fe)
       fetype = "gle"      => writeGLE2D(g1,opts,fe)
       void()
 
-    createDraw3D(s1:SPACE3,opts:List DROP,fe:List STR):Void ==
-      fetype:STR:=fe.1
-      feoutp:STR:=fe.2
+    createDraw3D(s1:SPACE3,opts:List DROP,fe:FET):Void ==
+      fetype:STR:=fe.'type
+      feoutp:STR:=fe.'output
+      fedisp:STR:=fe.'display
       output("Frontend ......: " fetype)$OutputPackage
       output("Output ........: " feoutp)$OutputPackage
       fetype = "gnuplot"  => writeGnuplot3D(s1,opts,fe)
@@ -53,8 +56,8 @@ DrawFrontend():
       void()
 
 
-    writeGnuplot2D(g : G, opts : List DROP, fe:List STR):Void ==
-      filename:String:=fe.2
+    writeGnuplot2D(g : G, opts : List DROP, fe:FET):Void ==
+      filename:String:=fe.'output
       f1:TextFile:=open(filename::FileName,"output")
       title:=title(opts,"")$DROP0
       style:=style(opts,"lc 'magenta' lw 2 with lines")$DROP0
@@ -73,8 +76,8 @@ DrawFrontend():
       
       
     
-    writeGnuplot3D(s : SPACE3, opts : List DROP, fe:List STR):Void ==
-      filename:String:=fe.2
+    writeGnuplot3D(s : SPACE3, opts : List DROP, fe:FET):Void ==
+      filename:String:=fe.'output
       f1:TextFile:=open(filename::FileName,"output")
       title:=title(opts,"")$DROP0 
       style:=style(opts,"lc 'magenta' lw 1 with lines")$DROP0  

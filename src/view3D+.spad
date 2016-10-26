@@ -53,6 +53,7 @@ ThreeDimensionalViewport() : Exports == Implementation where
   DROP ==> DrawOption
   COORDSYS ==> CoordinateSystems(SF)
   DRAWFE ==> DrawFrontend()
+  FET ==> Table(Symbol,String)
 
     -- the below macros correspond to the ones in include/actions.h
   ROTATE       ==> 0$I  -- rotate      in actions.h
@@ -372,9 +373,12 @@ ThreeDimensionalViewport() : Exports == Implementation where
       ++ key(v) returns the process ID number of the given three-dimensional
       ++ viewport, v, which is of domain \spadtype{ThreeDimensionalViewport}.
 --    print                 :  %                                       -> Void
-    setFrontend3D  : (String,String) -> List String
-    getFrontend3D  : () -> List String
-    makeFrontend3D : (%, List String) -> Void
+    setFrontend3D  : (FET) -> FET
+      ++ Sets the frontend according to the values in the FET table.
+    getFrontend3D  : () -> FET
+      ++ Gets the FET table of the current frontend.
+    makeFrontend3D : (%, FET) -> Void
+      ++ Make frontend according to the values in the FET table.
 
 
   Implementation ==> add
@@ -412,21 +416,20 @@ ThreeDimensionalViewport() : Exports == Implementation where
     defaultDeltaX : Reference(SF) := ref 0
     defaultDeltaY : Reference(SF) := ref 0
 
-
-    frontendType   : String := "vieman"
-    frontendOutput : String := "display"
+    
+    frontend:FET:=table()
+    frontend.'type:="viewman"
+    frontend.'output:=""
+    frontend.'display:=""
     
 --%Local Functions
 
-    setFrontend3D(ft:String, fo:String):List String ==
-      frontendType:String:=ft
-      frontendOutput:String:=fo
-      [frontendType,frontendOutput]
+    setFrontend3D(fe:FET):FET ==
+      frontend:=copy(fe)
       
-    getFrontend3D():List String == 
-      [frontendType,frontendOutput]
+    getFrontend3D():FET == frontend
 
-    makeFrontend3D(v:%, fe:List String):Void ==
+    makeFrontend3D(v:%, fe:FET):Void ==
       s1:SPACE3:=subspace(v)
       opts:List DROP:=options(v)
       createDraw3D(s1,opts,fe)
@@ -501,7 +504,7 @@ ThreeDimensionalViewport() : Exports == Implementation where
     makeViewport3D0 : % -> %
 
     makeViewport3D viewport ==
-      if frontendType = "vieman" then 
+      if frontend.'type = "vieman" then 
         makeViewport3D0 copy(viewport::Rep)
       else
         makeFrontend3D(viewport, getFrontend3D())
@@ -511,7 +514,7 @@ ThreeDimensionalViewport() : Exports == Implementation where
       v := viewport3D()
       v.space3D := space
       v.optionsField := [title(Title)]
-      if frontendType = "vieman" then
+      if frontend.'type = "vieman" then
         makeViewport3D0(v)
       else
         makeFrontend3D(v, getFrontend3D())
@@ -521,7 +524,7 @@ ThreeDimensionalViewport() : Exports == Implementation where
       v := viewport3D()
       v.space3D := space
       v.optionsField := opts
-      if frontendType = "vieman" then
+      if frontend.'type = "vieman" then
         makeViewport3D0(v)
       else
         makeFrontend3D(v, getFrontend3D())

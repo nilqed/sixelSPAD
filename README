@@ -6,3 +6,26 @@
 -- in folder src/
 
 https://nilqed.github.io/drawfe/
+
+
+
+For a black background add to ~/.gnuplot :
+
+set term sixel
+# change a color of border.
+set border lw 1 lc rgb "yellow"
+set linetype 8 lc rgb "white"
+set linetype cycle 8
+
+
+# change text colors of  tics
+set xtics textcolor rgb "white"
+set ytics textcolor rgb "white"
+
+# change text colors of labels
+set xlabel "X" textcolor rgb "white"
+set ylabel "Y" textcolor rgb "white"
+
+# change a text color of key
+set key textcolor rgb "white"
+

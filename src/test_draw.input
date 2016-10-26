@@ -4,15 +4,23 @@
 )co drawfe
 )co view2D+
 )co view3D+
+)co draw+
 
 
 -- Setting/getting frontends
 
-getFrontend2D()
-getFrontend3D()
+fe2D:=getFrontend2D()
+fe2D.'type:="gnuplot"
+fe2D.'output:="data2d.gpl"
+fe2D.'display:="sixel"
 
-setFrontend2D("gnuplot","data2d.gpl")
-setFrontend3D("gnuplot","data3d.gpl")
+fe3D:=getFrontend3D()
+fe3D.'type:="gnuplot"
+fe3D.'output:="data3d.gpl"
+fe3D.'display:="sixel"
+
+setFrontend2D(fe2D)
+setFrontend3D(fe3D)
 
 getFrontend2D()
 getFrontend3D()
