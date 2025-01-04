@@ -1,8 +1,11 @@
-#!/bin/sh
+#!/bin/bash
 
-usage()
+
+function usage()
 {
-printf '%s\n' "This is fricas2sixel V 1.0.2 :: (posix, TeX Live)
+cat <<ENDUSAGE
+
+This is fricas2sixel V 1.0.1 :: (TeX Live)
 
 Usage: $0 [OPTION]... TEXSTRING
 Options are chosen to be similar to dvips' options where possible:
@@ -23,11 +26,16 @@ Options are chosen to be similar to dvips' options where possible:
   Examples: '\$\alpha\$' | '\LaTeX' | 'This is math: \$x+y\$'.
 
 Required applications: latex, dvipng, img2sixel.
-Terminals supporting sixel graphics: xterm -ti vt340, mintty, mlterm and more."
+Terminals supporting sixel graphics: xterm -ti vt340, mintty, mlterm.
+
+ENDUSAGE
 }
 
-[ $# -eq 0 ] && { usage;exit; };
-[ "$1" = -h ] || [ "$1" = --help ] && { usage;exit; };
+
+[[ $# == 0 ]]       && { usage;exit; };
+[[ $1 == -h ]]      && { usage;exit; };
+[[ $1 == --help ]]  && { usage;exit; };
+
 
 #
 # config (default)
@@ -38,15 +46,15 @@ bg=Black
 D=150  #120
 T=bbox  #bbox,tight ...
 O=-1.0cm,-2.0cm
-img="$(mktemp latex2sixel_XXXXXX)"
-jobname="$(mktemp latex2sixel_XXXXXX)"
+img=img$RANDOM.png
+jobname=job$RANDOM
 
-trap 'rm "$img" "$jobname" "$jobname.aux" "$jobname.dvi" "$jobname.log"' EXIT INT
 
 #
 # option parsing
 #
-while [ $# -gt 1 ]; do
+while [[ $# -gt 1 ]]
+do
 arg="$1"
 
 case $arg in
@@ -80,9 +88,10 @@ done
 # TeX
 #
 
-texsrc="$1"
+texsrc=$BASH_ARGV
 
-TEX="\documentclass[$pt]{article}
+TEX=$(cat <<EOF
+\documentclass[$pt]{article}
 \usepackage{amsmath,amssymb}
 \usepackage{breqn}
 \pagestyle{empty}
@@ -92,12 +101,21 @@ TEX="\documentclass[$pt]{article}
 \def\csch{\mathrm{csch}}
 \begin{document}
  \begin{math} $texsrc \end{math}
-\end{document}"
-TEX="$(printf '%s\n' "$TEX" | tr '\n' ' ')"
+\end{document}
+EOF
+)
+
+#echo $TEX
 
 LATEX="latex -jobname=$jobname -interaction=nonstopmode"
 DVIPNG="dvipng -T $T -D $D -O $O -fg $fg -bg $bg -q -o $img"
 
-printf '%s\n' "$TEX" | $LATEX > /dev/null 2>&1
-$DVIPNG "$jobname.dvi" > /dev/null 2>&1
-img2sixel "$img"
+
+echo $TEX | $LATEX > /dev/null 2>&1
+$DVIPNG $jobname.dvi  > /dev/null 2>&1
+img2sixel $img
+
+rm $jobname.*
+rm $img
+
+
